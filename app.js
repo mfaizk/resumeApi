@@ -1,13 +1,12 @@
-const { urlencoded } = require("express");
 const express = require("express");
 const app = express();
-const router = require("./router/auth.route");
+const auth_router = require("./router/auth.route");
 
 app.use(express.json());
 // app.use(urlencoded({}));
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("I am at testing root");
 });
-app.use(router);
+app.use(auth_router);
 
 module.exports = app;

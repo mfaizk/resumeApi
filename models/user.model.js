@@ -24,8 +24,8 @@ UserModel.pre("save", async function (next) {
 });
 
 UserModel.methods = {
-  async comparePassword(password) {
-    return await bcrypt.compare(password, this.password);
+  async comparePassword(pass) {
+    return await bcrypt.compare(pass, this.password);
   },
   async generateJWTToken() {
     return jwt.sign({ email: this.email, _id: this._id }, config.JWT_SECRET, {
