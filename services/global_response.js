@@ -1,8 +1,8 @@
-const GlobalResponse = (res, msg, status, data) => {
+const GlobalResponse = (res, msg, success, status, data) => {
   try {
     res.status(status).json({
       msg: msg,
-      success: status,
+      success: success,
       data: data,
     });
   } catch (error) {

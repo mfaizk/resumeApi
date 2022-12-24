@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/index");
 const UserModel = mongoose.Schema({
   email: {
-    type: Strng,
+    type: String,
     trim: true,
     required: [true, "Insufficient data"],
   },
@@ -18,7 +18,8 @@ const UserModel = mongoose.Schema({
 
 UserModel.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
+  // console.log(this.password);
   return next();
 });
 
@@ -33,4 +34,4 @@ UserModel.methods = {
   },
 };
 
-module.exports = mongoose.Model("user", UserModel);
+module.exports = mongoose.model("user", UserModel);

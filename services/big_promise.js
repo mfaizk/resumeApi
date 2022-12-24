@@ -4,7 +4,7 @@ const BigPromise = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
   } catch (error) {
-    GlobalResponse(res, error.message, 400, []);
+    GlobalResponse(res, error.message, false, 401, []);
   }
 };
 
