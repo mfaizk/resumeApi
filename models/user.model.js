@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/index");
+const crypto = require("crypto");
+const { resetPassword } = require("../controller/auth.controller");
 const UserModel = mongoose.Schema({
   email: {
     type: String,
@@ -13,6 +15,15 @@ const UserModel = mongoose.Schema({
     select: false,
     required: [true, "Insufficient data"],
     minlength: [8, "Minimum 8 character password required"],
+  },
+  forgetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  forgetPasswordTokenExpiry: {
+    type: Date,
+    select: false,
+    default: Date.now(),
   },
 });
 
@@ -28,10 +39,15 @@ UserModel.methods = {
     return await bcrypt.compare(pass, this.password);
   },
   async generateJWTToken() {
-    console.log(this.email, this._id);
+    // console.log(this.email, this._id);
     return jwt.sign({ email: this.email, _id: this._id }, config.JWT_SECRET, {
       expiresIn: config.JWT_EXPIRES,
     });
+  },
+  async generateForgetPasswordToken() {
+    this.forgetPasswordToken = crypto.randomBytes(64).toString("hex");
+    this.forgetPasswordTokenExpiry = Date.now() + 2 * 24 * 60 * 60 * 1000; //generate two days expiry password
+    return this.forgetPasswordToken;
   },
 };
 

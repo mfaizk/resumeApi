@@ -1,8 +1,6 @@
 const BigPromise = require("../services/big_promise");
 const GlobalResponse = require("../services/global_response");
 const USER = require("../models/user.model");
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config");
 
 //Signup controller started
 
@@ -48,25 +46,51 @@ const signin = BigPromise(async (req, res) => {
 
 //SignIn controller END
 
-//auth middleware controller start
+//forgetPassword controller Start
+const forgetPassword = BigPromise(async (req, res) => {
+  const { email } = req.body;
 
-const auth_checker = BigPromise(async (req, res, next) => {
-  const { token } = req.cookies;
-  if (!token) {
-    return GlobalResponse(res, "Auth token doesn't exist", false, 401, []);
+  if (!email) {
+    return GlobalResponse(res, "Insufficient data", false, 401, []);
   }
-  const data = jwt.verify(token, JWT_SECRET);
-  if (!data) {
-    return GlobalResponse(res, "Invalid Token", false, 401, []);
-  }
-  const user = await USER.findOne({ email: data.email });
+  const user = await USER.findOne({ email }).select(
+    "+forgetPasswordToken,+forgetPasswordTokenExpiry"
+  );
   if (!user) {
     return GlobalResponse(res, "User doesn't exist", false, 401, []);
   }
-  req.user = user;
-
-  return next();
+  await user.generateForgetPasswordToken();
+  await user.save();
+  return GlobalResponse(res, "Recovery link sent to email", true, 201, []);
 });
-//auth middleware controller END
+//forgetPassword controller End
 
-module.exports = { signin, signup, auth_checker };
+const resetPassword = BigPromise(async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+  if (!(id && password)) {
+    return GlobalResponse(res, "Insuffcient data", false, 401, []);
+  }
+  const user = await USER.findOne({ forgetPasswordToken: id }).select(
+    "+password,+forgetPasswordTokenExpiry,+forgetPasswordToken"
+  );
+  if (!user) {
+    return GlobalResponse(res, "User doesn't exist", false, 401, []);
+  }
+
+  if (user.forgetPasswordTokenExpiry > Date.now()) {
+    return GlobalResponse(res, "Token expired", false, 401, []);
+  }
+  user.password = password;
+  user.forgetPasswordTokenExpiry = undefined;
+  user.forgetPasswordToken = undefined;
+  await user.save();
+  return GlobalResponse(res, "Password reset successfull", true, 201, []);
+});
+
+module.exports = {
+  signin,
+  signup,
+  forgetPassword,
+  resetPassword,
+};
