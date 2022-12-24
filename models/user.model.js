@@ -28,6 +28,7 @@ UserModel.methods = {
     return await bcrypt.compare(pass, this.password);
   },
   async generateJWTToken() {
+    console.log(this.email, this._id);
     return jwt.sign({ email: this.email, _id: this._id }, config.JWT_SECRET, {
       expiresIn: config.JWT_EXPIRES,
     });
