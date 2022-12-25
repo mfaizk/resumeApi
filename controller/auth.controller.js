@@ -69,7 +69,7 @@ const forgetPassword = BigPromise(async (req, res) => {
       text: "Password reset link",
       html: `<a href=${req.protocol}://${req.get(
         "host"
-      )}/resetpass/${token}>Click me to reset password</a>`,
+      )}/api/auth/resetpass/${token}>Click me to reset password</a>`,
     });
   } catch (error) {
     (user.forgetPasswordToken = undefined),
