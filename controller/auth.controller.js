@@ -72,6 +72,7 @@ const forgetPassword = BigPromise(async (req, res) => {
       )}/api/auth/resetpass/${token}>Click me to reset password</a>`,
     });
   } catch (error) {
+    console.log(error.message);
     (user.forgetPasswordToken = undefined),
       (user.forgetPasswordTokenExpiry = undefined),
       await user.save();

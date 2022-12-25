@@ -23,7 +23,6 @@ const UserModel = mongoose.Schema({
   forgetPasswordTokenExpiry: {
     type: Date,
     select: false,
-    default: Date.now(),
   },
 });
 
@@ -51,7 +50,7 @@ UserModel.methods = {
       .update(token)
       .digest("hex");
     this.forgetPasswordTokenExpiry = Date.now() + 2 * 24 * 60 * 60 * 1000; //generate two days expiry password
-    // console.log(token);
+    console.log(token);
     return token;
   },
 };
