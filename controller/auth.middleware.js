@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const GlobalResponse = require("../services/global_response");
 const BigPromise = require("../services/big_promise");
+const USER = require("../models/user.model");
 
 const auth_checker = BigPromise(async (req, res, next) => {
   const { token } = req.cookies;

@@ -45,9 +45,14 @@ UserModel.methods = {
     });
   },
   async generateForgetPasswordToken() {
-    this.forgetPasswordToken = crypto.randomBytes(64).toString("hex");
+    const token = crypto.randomBytes(64).toString("hex");
+    this.forgetPasswordToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
     this.forgetPasswordTokenExpiry = Date.now() + 2 * 24 * 60 * 60 * 1000; //generate two days expiry password
-    return this.forgetPasswordToken;
+    // console.log(token);
+    return token;
   },
 };
 

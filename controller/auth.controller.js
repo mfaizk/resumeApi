@@ -1,7 +1,7 @@
 const BigPromise = require("../services/big_promise");
 const GlobalResponse = require("../services/global_response");
 const USER = require("../models/user.model");
-
+const crypto = require("crypto");
 //Signup controller started
 
 const signup = BigPromise(async (req, res) => {
@@ -71,7 +71,8 @@ const resetPassword = BigPromise(async (req, res) => {
   if (!(id && password)) {
     return GlobalResponse(res, "Insuffcient data", false, 401, []);
   }
-  const user = await USER.findOne({ forgetPasswordToken: id }).select(
+  const token = crypto.createHash("sha256").update(id).digest("hex");
+  const user = await USER.findOne({ forgetPasswordToken: token }).select(
     "+password,+forgetPasswordTokenExpiry,+forgetPasswordToken"
   );
   if (!user) {
