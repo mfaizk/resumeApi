@@ -2,6 +2,7 @@ const BigPromise = require("../services/big_promise");
 const GlobalResponse = require("../services/global_response");
 const USER = require("../models/user.model");
 const crypto = require("crypto");
+const transporter = require("../services/mail.helper");
 //Signup controller started
 
 const signup = BigPromise(async (req, res) => {
@@ -59,11 +60,29 @@ const forgetPassword = BigPromise(async (req, res) => {
   if (!user) {
     return GlobalResponse(res, "User doesn't exist", false, 401, []);
   }
-  await user.generateForgetPasswordToken();
+  const token = await user.generateForgetPasswordToken();
   await user.save();
+  try {
+    transporter.sendMail({
+      from: '"JJ"<jj@j.com>',
+      to: user.email,
+      text: "Password reset link",
+      html: `<a href=${req.protocol}://${req.get(
+        "host"
+      )}/resetpass/${token}>Click me to reset password</a>`,
+    });
+  } catch (error) {
+    (user.forgetPasswordToken = undefined),
+      (user.forgetPasswordTokenExpiry = undefined),
+      await user.save();
+    return GlobalResponse(res, "Unable to send mail", false, 401, []);
+  }
+
   return GlobalResponse(res, "Recovery link sent to email", true, 201, []);
 });
 //forgetPassword controller End
+
+//RESETPassword controller Start
 
 const resetPassword = BigPromise(async (req, res) => {
   const { id } = req.params;
@@ -88,6 +107,7 @@ const resetPassword = BigPromise(async (req, res) => {
   await user.save();
   return GlobalResponse(res, "Password reset successfull", true, 201, []);
 });
+//RESETPassword controller End
 
 module.exports = {
   signin,
