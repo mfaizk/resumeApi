@@ -9,6 +9,9 @@ const config = {
   SMTP_PORT: process.env.SMTP_PORT,
   SMTP_AUTH_USER: process.env.SMTP_AUTH_USER,
   SMTP_AUTH_PASS: process.env.SMTP_AUTH_PASS,
+  SMTP_CLIENT_ID: process.env.SMTP_CLIENT_ID,
+  SMTP_CLIENT_SECRET: process.env.SMTP_CLIENT_SECRET,
+  SMTP_CLIENT_REFRESH_TOKEN: process.env.SMTP_CLIENT_REFRESH_TOKEN,
 };
 
 module.exports = config;

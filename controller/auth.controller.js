@@ -3,6 +3,7 @@ const GlobalResponse = require("../services/global_response");
 const USER = require("../models/user.model");
 const crypto = require("crypto");
 const transporter = require("../services/mail.helper");
+const config = require("../config");
 //Signup controller started
 
 const signup = BigPromise(async (req, res) => {
@@ -62,24 +63,28 @@ const forgetPassword = BigPromise(async (req, res) => {
   }
   const token = await user.generateForgetPasswordToken();
   await user.save();
-  try {
-    transporter.sendMail({
-      from: '"JJ"<jj@j.com>',
+  console.log(config.SMTP_AUTH_PASS, config.SMTP_AUTH_USER);
+  transporter.sendMail(
+    {
+      from: config.SMTP_AUTH_USER,
       to: user.email,
       text: "Password reset link",
       html: `<a href=${req.protocol}://${req.get(
         "host"
       )}/api/auth/resetpass/${token}>Click me to reset password</a>`,
-    });
-  } catch (error) {
-    console.log(error.message);
-    (user.forgetPasswordToken = undefined),
-      (user.forgetPasswordTokenExpiry = undefined),
-      await user.save();
-    return GlobalResponse(res, "Unable to send mail", false, 401, []);
-  }
+    },
 
-  return GlobalResponse(res, "Recovery link sent to email", true, 201, []);
+    async function (err, info) {
+      if (err) {
+        console.log(err.message);
+        (user.forgetPasswordToken = undefined),
+          (user.forgetPasswordTokenExpiry = undefined),
+          await user.save();
+        return GlobalResponse(res, "Unable to send mail", false, 401, []);
+      }
+      return GlobalResponse(res, "Recovery link sent to email", true, 201, []);
+    }
+  );
 });
 //forgetPassword controller End
 
