@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../config/index");
 const crypto = require("crypto");
-const { resetPassword } = require("../controller/auth.controller");
 const UserModel = mongoose.Schema({
   email: {
     type: String,
