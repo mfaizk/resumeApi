@@ -41,8 +41,11 @@ const signin = BigPromise(async (req, res) => {
 
   const token = await user.generateJWTToken();
   res.cookie("token", token, { httpOnly: true });
+  user.password = undefined;
   return GlobalResponse(res, "Logged in successfully", true, 201, {
     token: token,
+    email: user.email,
+    _id: user._id,
   });
 });
 

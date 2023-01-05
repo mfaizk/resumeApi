@@ -8,7 +8,7 @@ const {
 const auth_checker = require("../controller/auth.middleware");
 
 auth_router.post("/api/signup", signup);
-auth_router.get("/api/signin", signin);
+auth_router.post("/api/signin", signin);
 auth_router.get("/api/auth/forget", forgetPassword);
 auth_router.get("/api/auth/resetpass/:id", resetPassword);
 auth_router.get("/api/home", auth_checker, (req, res) => {
