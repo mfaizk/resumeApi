@@ -118,9 +118,18 @@ const resetPassword = BigPromise(async (req, res) => {
 });
 //RESETPassword controller End
 
+//Logout controller start
+
+const logOut = BigPromise(async (req, res) => {
+  res.clearCookie("token");
+  return GlobalResponse(res, "Logout Successfully", true, 201, []);
+});
+//Logout controller end
+
 module.exports = {
   signin,
   signup,
   forgetPassword,
   resetPassword,
+  logOut,
 };
