@@ -13,7 +13,7 @@ auth_router.post("/api/signup", signup);
 auth_router.post("/api/signin", signin);
 auth_router.get("/api/auth/forget", forgetPassword);
 auth_router.get("/api/auth/resetpass/:id", resetPassword);
-auth_router.post("/api/logout", logOut);
+auth_router.get("/api/logout", logOut);
 
 auth_router.get("/api/home", auth_checker, (_req, res) => {
   return GlobalResponse(res, "Authorise", true, 201, []);
