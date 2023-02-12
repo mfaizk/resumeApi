@@ -38,8 +38,10 @@ UserModel.methods = {
   },
   async generateJWTToken() {
     // console.log(this.email, this._id);
+
     return jwt.sign({ email: this.email, _id: this._id }, config.JWT_SECRET, {
-      expiresIn: config.JWT_EXPIRES,
+      expiresIn:
+        Date.now() + Number(config.JWT_EXPIRES) * (24 * 60 * 60 * 1000),
     });
   },
   async generateForgetPasswordToken() {
@@ -49,7 +51,7 @@ UserModel.methods = {
       .update(token)
       .digest("hex");
     this.forgetPasswordTokenExpiry = Date.now() + 2 * 24 * 60 * 60 * 1000; //generate two days expiry password
-    console.log(token);
+    console.log(this.forgetPasswordTokenExpiry);
     return token;
   },
 };
