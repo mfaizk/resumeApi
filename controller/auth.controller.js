@@ -41,9 +41,7 @@ const signin = BigPromise(async (req, res) => {
 
   const token = await user.generateJWTToken();
   res.cookie("token", token, {
-    httpOnly: true,
     maxAge: Date.now() + 2 * 24 * 60 * 60 * 1000,
-    secure: false,
     sameSite: "none",
   });
   user.password = undefined;
