@@ -9,7 +9,7 @@ app.set("Access-Control-Allow-Origin", "https://resumebuilderhub.netlify.app");
 
 app.use(
   cors({
-    origin: "*",
+    origin: ["https://resumebuilderhub.netlify.app", "http://localhost:3001"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
     exposedHeaders: ["*", "Authorization"],
