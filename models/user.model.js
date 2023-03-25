@@ -39,7 +39,7 @@ UserModel.methods = {
   async generateJWTToken() {
     // console.log(typeof config.JWT_EXPIRES);
     return jwt.sign({ email: this.email, _id: this._id }, config.JWT_SECRET, {
-      expiresIn: config.JWT_EXPIRES,
+      expiresIn: Date.now() + 2 * 24 * 60 * 60 * 1000,
     });
   },
   async generateForgetPasswordToken() {
