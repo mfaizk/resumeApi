@@ -43,7 +43,6 @@ const signin = BigPromise(async (req, res) => {
   res.cookie("token", token, {
     expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     sameSite: "none",
-    domain: ".netlify.app",
   });
   user.password = undefined;
   return GlobalResponse(res, "Logged in successfully", true, 201, {
