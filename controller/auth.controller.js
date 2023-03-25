@@ -44,6 +44,7 @@ const signin = BigPromise(async (req, res) => {
     httpOnly: true,
     maxAge: Date.now() + 2 * 24 * 60 * 60 * 1000,
     secure: false,
+    sameSite: "none",
   });
   user.password = undefined;
   return GlobalResponse(res, "Logged in successfully", true, 201, {
