@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 app.use(express.json());
 app.use(cookieParser());
+app.set("Access-Control-Allow-Origin", "https://resumebuilderhub.netlify.app");
 app.use(
   cors({
     origin: ["https://resumebuilderhub.netlify.app", "http://localhost:3001"],
